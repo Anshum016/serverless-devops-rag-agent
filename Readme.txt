@@ -1,41 +1,58 @@
-# Serverless DevOps Log Analysis Agent 🤖
+🚀 Serverless DevOps Log Analysis Agent (RAG + AWS + Gemini AI)
 
-A serverless RAG (Retrieval-Augmented Generation) application built on AWS that analyzes server logs and provides actionable solutions using Google Gemini AI.
+A fully serverless, production-ready Log Analysis Agent built on AWS + LangGraph + Google Gemini.
+This system ingests logs, converts them into searchable vectors, retrieves the most relevant chunks, validates them using an AI grader, and finally produces actionable insights — all without managing servers.
 
+⭐ Key Features
+🔥 1. End-to-End Serverless Architecture
 
-## 🚀 Features
-* **Serverless Architecture:** Fully deployed on AWS Lambda, S3, and API Gateway using Terraform.
-* **RAG Pipeline:** Retrieves relevant logs using FAISS vector search.
-* **AI-Powered:** Uses Google Gemini 2.0 Flash to grade relevance and generate solutions.
-* **Dual-Robot System:**
-    * **Ingest Worker:** Automatically processes logs uploaded to S3.
-    * **Chat Agent:** Answers user questions via a Streamlit UI.
-* **Infrastructure as Code:** One-click deployment with Terraform.
+Fully deployed using AWS Lambda, S3, CloudWatch, API Gateway, and ECR.
 
----
+Zero maintenance, auto-scalable, cost-efficient.
 
-## 🛠️ Prerequisites
+🤖 2. Dual AI Agents (LangGraph)
 
-Before running this project, ensure you have the following installed:
-1.  **Docker Desktop** (Must be running).
-2.  **Terraform** (v1.0+).
-3.  **AWS CLI** (Configured with `aws configure`).
-4.  **Python 3.10+** (For local frontend testing).
-5.  **Google Gemini API Key** (Get one from [Google AI Studio](https://aistudio.google.com/)).
+Ingest Worker Agent:
+Processes logs uploaded to S3 → cleans → chunks → embeds → stores into FAISS vector DB.
 
----
+Chat Retrieval Agent:
+Accepts user queries → retrieves relevant log chunks → grades relevance → answers using Gemini AI.
 
-## 📦 Project Structure
+🧠 3. RAG (Retrieval-Augmented Generation) Pipeline
 
-```text
+FAISS Vector Search
+
+Node Retrieval Agent (Retriever)
+
+Node Grading Agent (Relevance Checker)
+
+Best-result answer generator (Gemini)
+
+📦 4. Infrastructure as Code
+
+Entire cloud infra deployed via Terraform (one command).
+
+💬 5. Streamlit Frontend
+
+Clean chat UI
+
 .
-├── aws_cloud/          # Terraform Infrastructure code
-│   ├── lambda.tf       # Defines Chat & Ingest functions
-│   ├── s3.tf           # S3 Bucket & Event Triggers
-│   └── ...
-├── backend/            # Python Source Code
-│   ├── agent.py        # LangGraph Workflow (The Brain)
-│   ├── ingest.py       # Vector DB Creation (The Learner)
-│   └── Dockerfile      # Container definition
-└── frontend/           # Streamlit UI
-    └── app.py          # Chat Interface
+├── aws_cloud/            # Terraform Infrastructure code
+│   ├── lambda.tf         # Chat & Ingest functions infra
+│   ├── s3.tf             # S3 bucket + event triggers
+│   ├── iam.tf            # IAM roles for Lambda
+│   ├── ecr.tf            # ECR repo for containerized Lambda
+│   └── variables.tf
+│
+├── backend/              # Python Source Code
+│   ├── agent.py          # LangGraph RAG pipeline (Chat bot)
+│   ├── ingest.py         # Log processor + FAISS vector creator
+│   ├── Dockerfile        # Containerized Lambda image
+│   └── requirements.txt
+│
+└── frontend/             # Streamlit Web UI
+    ├── app.py            # Chat Interface
+    └── styles.css
+
+
+Sends POST request → triggers AWS Lambda → returns generated solution with logs context.
