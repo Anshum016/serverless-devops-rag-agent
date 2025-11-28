@@ -55,4 +55,25 @@ Clean chat UI
     └── styles.css
 
 
+🚀 Deployment Guide
+Step 1 — Clone Repository
+git clone https://github.com/<your-repo>/log-analysis-rag-agent.git
+cd log-analysis-rag-agent
+
+Step 2 — Deploy AWS Resources
+cd aws_cloud
+terraform init
+terraform apply
+
+Step 3 — Build & Push Lambda Docker Image
+cd backend
+docker build -t log-agent .
+aws ecr get-login-password | docker login ...
+docker tag log-agent:latest <AWS_ACCOUNT>.dkr.ecr.<region>.amazonaws.com/log-agent
+docker push <AWS_ECR_URL>
+
+Step 4 — Run Frontend Locally
+cd frontend
+pip install -r ../backend/requirements.txt
+streamlit run app.py
 Sends POST request → triggers AWS Lambda → returns generated solution with logs context.
