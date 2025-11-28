@@ -1,54 +1,53 @@
-🚀 Serverless DevOps Log Analysis Agent (RAG + AWS + Gemini AI)
+# Serverless DevOps Log Analysis Agent 🤖
 
-A fully serverless, production-ready Log Analysis Agent built on AWS + LangGraph + Google Gemini.
-This system ingests logs, converts them into searchable vectors, retrieves the most relevant chunks, validates them using an AI grader, and finally produces actionable insights — all without managing servers.
+A serverless RAG (Retrieval-Augmented Generation) application built on AWS that analyzes server logs and provides actionable solutions using Google Gemini AI.
 
 ![Architecture Diagram](Architecture-log-rag-agent.png)
 
-⭐ Key Features
+## 📖 Project Overview
 
-🔥 1. End-to-End Serverless Architecture
-Fully deployed using AWS Lambda, S3, CloudWatch, API Gateway, and ECR.
-Zero maintenance, auto-scalable, cost-efficient.
+This project represents the **"Brain"** of an enterprise-grade log analysis system.
 
-🤖 2. Dual AI Agents (LangGraph)
-Ingest Worker Agent:
-Processes logs uploaded to S3 → cleans → chunks → embeds → stores into FAISS vector DB.
+In a full-scale production environment, logs would stream continuously from AWS CloudWatch via Firehose. For this **Proof of Concept (PoC)**, I focused on building the core intelligence logic: a system that ingests a "Knowledge Base" of historical error logs, indexes them into a vector database, and uses a multi-step AI workflow to reason out solutions for new incidents.
 
-Chat Retrieval Agent:
-Accepts user queries → retrieves relevant log chunks → grades relevance → answers using Gemini AI.
+## 🚀 Key Features
 
-🧠 3. RAG (Retrieval-Augmented Generation) Pipeline
-FAISS Vector Search
-Node Retrieval Agent (Retriever)
-Node Grading Agent (Relevance Checker)
-Best-result answer generator (Gemini)
+* **Serverless Architecture:** Fully deployed on AWS Lambda, S3, and API Gateway using Terraform. Costs $0.00 when idle.
+* **Dual-Robot System:**
+    * **Ingest Worker:** Automatically processes log files uploaded to S3, converting them into vector embeddings.
+    * **Chat Agent:** A Reasoning Agent that answers user questions via a Streamlit UI.
+* **Intelligent RAG Pipeline:**
+    * Uses **FAISS** for semantic search.
+    * Uses **LangGraph** to create a self-correcting workflow (Retrieve -> Grade -> Generate).
+    * **Self-Grading:** The AI critiques retrieved logs to ensure relevance before answering, preventing hallucinations.
+* **Infrastructure as Code:** Complete AWS environment provisioned via **Terraform**.
 
-📦 4. Infrastructure as Code
+---
 
-Entire cloud infra deployed via Terraform (one command).
+## 🛠️ Tech Stack
 
-💬 5. Streamlit Frontend
+* **Cloud:** AWS (Lambda, S3, API Gateway, ECR, IAM)
+* **IaC:** Terraform
+* **AI Model:** Google Gemini 2.0 Flash
+* **Orchestration:** LangChain & LangGraph
+* **Vector DB:** FAISS (CPU)
+* **Frontend:** Streamlit (Python)
 
-🚀 Deployment Guide
-Step 1 — Clone Repository
-git clone https://github.com/<your-repo>/log-analysis-rag-agent.git
-cd log-analysis-rag-agent
+---
 
-Step 2 — Deploy AWS Resources
-cd aws_cloud
-terraform init
-terraform apply
+## 📂 Project Structure
 
-Step 3 — Build & Push Lambda Docker Image
-cd backend
-docker build -t log-agent .
-aws ecr get-login-password | docker login ...
-docker tag log-agent:latest <AWS_ACCOUNT>.dkr.ecr.<region>.amazonaws.com/log-agent
-docker push <AWS_ECR_URL>
-
-Step 4 — Run Frontend Locally
-cd frontend
-pip install -r ../backend/requirements.txt
-streamlit run app.py
-Sends POST request → triggers AWS Lambda → returns generated solution with logs context.
+```text
+.
+├── aws_cloud/          # Terraform Infrastructure code (IaC)
+│   ├── lambda.tf       # Defines Chat & Ingest functions
+│   ├── s3.tf           # S3 Bucket & Event Notifications
+│   ├── api_gateway.tf  # HTTP API trigger for the Chat Agent
+│   └── ...
+├── backend/            # Python Source Code
+│   ├── agent.py        # LangGraph Workflow (The "Brain")
+│   ├── ingest.py       # Vector DB Creation (The "Learner")
+│   ├── lambda_function.py # Handler for Chat API
+│   └── Dockerfile      # Container definition for AWS Lambda
+└── frontend/           # Streamlit UI
+    └── app.py          # Chat Interface for testing
