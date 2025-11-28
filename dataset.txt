@@ -1,0 +1,138 @@
+ISSUE 1
+Log: 2023-10-27 08:30:00 [ERROR] ConnectionRefusedError: Redis connection failed at 10.0.0.5:6379. Connection refused. Solution: Check if the Redis service is running using sudo systemctl status redis. Verify security group rules allow traffic on port 6379 from the application subnet.
+
+ISSUE 2
+Log: 2023-10-27 08:32:15 [CRITICAL] PaymentGatewayTimeout: Transaction ID #998877 failed after 30000ms. Upstream provider unavailable. Solution: The upstream provider is experiencing latency. Increase the timeout value in config.yaml from 30s to 60s to prevent premature termination.
+
+ISSUE 3
+Log: 2023-10-27 09:15:00 [ERROR] CrashLoopBackOff: Pod 'frontend-app-7b8b9c-xyz' is crashing repeatedly. Exit Code 137. Solution: Exit Code 137 indicates the container was killed by OOMKiller (Out of Memory). Increase the memory limit in the deployment.yaml file resources section (e.g., change memory: 256Mi to memory: 512Mi).
+
+ISSUE 4
+Log: 2023-10-27 09:20:00 [WARN] DiskUsageHigh: Filesystem /dev/xvda1 is at 92% capacity. Solution: Run du -sh * | sort -rh | head -n 10 to identify large files. clear old log files in /var/log or execute docker system prune -a to remove unused images and containers.
+
+ISSUE 5
+Log: 2023-10-27 10:00:00 [ERROR] pg_hba.conf: no pg_hba.conf entry for host "192.168.1.50", user "app_user", database "users_db", SSL off. Solution: Edit the PostgreSQL configuration file /etc/postgresql/13/main/pg_hba.conf. Add a line to allow the application IP: host users_db app_user 192.168.1.50/32 md5. Reload Postgres with sudo service postgresql reload.
+
+ISSUE 6
+Log: 2023-10-27 10:45:00 [ERROR] Nginx 502 Bad Gateway: connect() failed (111: Connection refused) while connecting to upstream. Solution: The backend application server (e.g., Gunicorn/uWSGI) is not running or not listening on the expected socket/port. Restart the backend service and ensure the proxy_pass directive in Nginx matches the backend's listening address.
+
+ISSUE 7
+Log: 2023-10-27 11:00:00 [FATAL] Jenkins Build Failed: 'npm: command not found' in stage 'Build Frontend'. Solution: The Jenkins agent does not have Node.js installed or it is not in the $PATH. Install the "NodeJS" plugin in Jenkins and configure the Global Tool Configuration to auto-install Node, or ensure the underlying agent AMI includes Node.js.
+
+ISSUE 8
+Log: 2023-10-27 11:30:00 [ERROR] AWS-CLI: An error occurred (AccessDenied) when calling the PutObject operation: Access Denied. Solution: The IAM role attached to the EC2 instance or Lambda lacks s3:PutObject permissions. Update the IAM policy to allow this action on the target bucket resource arn:aws:s3:::my-target-bucket/*.
+
+ISSUE 9
+Log: 2023-10-27 12:00:00 [ERROR] Kubernetes: ErrImagePull: rpc error: code = Unknown desc = Error response from daemon: pull access denied for my-private-repo/image, repository does not exist or may require 'docker login'. Solution: The Kubernetes cluster is missing the imagePullSecrets configuration. Create a secret using kubectl create secret docker-registry... and add it to the ServiceAccount or specific Pod spec under imagePullSecrets.
+
+ISSUE 10
+Log: 2023-10-27 12:45:00 [ERROR] Terraform: Error acquiring the state lock. Error message: 2 errors occurred: * Resource 'aws_dynamodb_table' does not have attribute 'lockID'. Solution: Another process is holding the state lock, or a previous apply crashed. Force unlock the state using terraform force-unlock <LOCK_ID> (use with caution).
+
+ISSUE 11
+Log: 2023-10-27 13:10:00 [ERROR] Java: java.lang.OutOfMemoryError: Java heap space. Solution: The JVM ran out of heap memory. Increase the maximum heap size by setting the -Xmx flag in the startup script (e.g., -Xmx2048m).
+
+ISSUE 12
+Log: 2023-10-27 13:45:00 [WARN] SSH: @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED! @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Solution: The remote server's host key has changed, possibly due to a rebuild. Remove the old key from your local machine using ssh-keygen -R <hostname_or_ip>.
+
+ISSUE 13
+Log: 2023-10-27 14:00:00 [ERROR] Git: fatal: refusing to merge unrelated histories. Solution: You are trying to pull from a remote that doesn't share a common ancestor with your local branch. If this is intentional, use the flag git pull origin main --allow-unrelated-histories.
+
+ISSUE 14
+Log: 2023-10-27 14:30:00 [ERROR] Docker: bind: address already in use. driver failed programming external connectivity on endpoint web-server. Solution: Another process is already using the port (likely port 80 or 443). Find the process using sudo lsof -i :80 and kill it, or map the container to a different host port (e.g., -p 8080:80).
+
+ISSUE 15
+Log: 2023-10-27 15:00:00 [CRITICAL] ElasticSearch: ClusterBlockException[blocked by: [FORBIDDEN/12/index read-only / allow delete (api)];] Solution: Elasticsearch has switched to read-only mode because disk usage exceeded the high watermark (usually 95%). Free up disk space on the node and then manually reset the read-only block using the cluster settings API.
+
+ISSUE 16
+Log: 2023-10-27 15:30:00 [ERROR] Python: ModuleNotFoundError: No module named 'requests'. Solution: The required Python library is missing from the environment. Run pip install requests or ensure you have activated the correct virtual environment (source venv/bin/activate) before running the script.
+
+ISSUE 17
+Log: 2023-10-27 16:00:00 [ERROR] Ansible: FAILED! => {"msg": "The task includes an option with an undefined variable. The error was: 'db_password' is undefined"} Solution: The playbook expects a variable named db_password which was not provided. Define it in group_vars, host_vars, or pass it via command line using -e "db_password=secret".
+
+ISSUE 18
+Log: 2023-10-27 16:30:00 [ERROR] MongoDB: SCRAM-SHA-1 authentication failed for user "admin" on database "admin". Solution: Double-check the connection string URI. Ensure the user exists in the correct authentication database (usually admin vs the specific application database). Reset the password if necessary.
+
+ISSUE 19
+Log: 2023-10-27 17:00:00 [ERROR] Certificate: SEC_ERROR_EXPIRED_CERTIFICATE. The certificate for example.com expired on 2023-10-26. Solution: The SSL/TLS certificate has expired. Renew it using Certbot (sudo certbot renew) or upload the new certificate files from your CA to the web server / load balancer.
+
+ISSUE 20
+Log: 2023-10-27 17:15:00 [ERROR] Helm: Error: release: already exists. Solution: You are trying to install a Helm chart with a name that is already in use. Use helm upgrade --install <release_name> <chart> to upgrade the existing release instead of failing.
+
+ISSUE 21
+Log: 2023-10-27 17:45:00 [ERROR] Apache: AH00558: httpd: Could not reliably determine the server's fully qualified domain name. Solution: Edit the main Apache configuration file (httpd.conf or apache2.conf) and globally set the ServerName directive to localhost or your domain name to suppress this warning.
+
+ISSUE 22
+Log: 2023-10-27 18:00:00 [ERROR] Linux: fork: retry: Resource temporarily unavailable. Solution: The system has hit the maximum number of open processes/threads for the user. Increase the limit in /etc/security/limits.conf (nproc) or debug the application for "process leaks" (zombie processes).
+
+ISSUE 23
+Log: 2023-10-27 18:30:00 [ERROR] MySQL: ERROR 1040 (HY000): Too many connections. Solution: The database has reached its maximum concurrent connection limit. Increase max_connections in my.cnf, or investigate the application code for connection leaks (connections not being returned to the pool).
+
+ISSUE 24
+Log: 2023-10-27 19:00:00 [ERROR] Prometheus: err="target down". Solution: The exporter endpoint is unreachable. Check firewall rules to ensure port 9100 (node_exporter) or equivalent is open. Verify the exporter service is running on the target machine.
+
+ISSUE 25
+Log: 2023-10-27 19:30:00 [ERROR] Kafka: org.apache.kafka.common.errors.NotLeaderForPartitionException: This server is not the leader for that topic-partition. Solution: The client is trying to produce/consume from a broker that is no longer the leader. Trigger a metadata update in the client application, or ensure the cluster is healthy and leadership election has settled.
+
+ISSUE 26
+Log: 2023-10-27 20:00:00 [ERROR] RabbitMQ: PRECONDITION_FAILED - inequivalent arg 'durable' for queue 'task_queue' in vhost '/': received 'true' but current is 'false'. Solution: The application is trying to declare a queue that already exists but with different properties. Delete the existing queue or update the application code to match the existing queue's configuration.
+
+ISSUE 27
+Log: 2023-10-27 20:30:00 [ERROR] ArgoCD: ComparisonError: rpc error: code = Unknown desc = Manifest generation error (cached): plugin sidecar failed. Solution: The config management plugin failed to generate manifests. Check the sidecar logs in the repo-server pod for specific script errors. Ensure all required tools (kustomize, helm, etc.) are available in the sidecar.
+
+ISSUE 28
+Log: 2023-10-27 21:00:00 [ERROR] Vault: Error making API request. URL: PUT http://127.0.0.1:8200/v1/sys/unseal Code: 400. Errors: * server is not yet initialized. Solution: The Vault server has started but hasn't been initialized. Run vault operator init to generate the unseal keys and root token before attempting to unseal.
+
+ISSUE 29
+Log: 2023-10-27 21:30:00 [ERROR] Go: panic: runtime error: invalid memory address or nil pointer dereference. Solution: The Go application attempted to access memory that wasn't initialized (null pointer exception). Debug the code to identify where a nil pointer is being dereferenced without a check.
+
+ISSUE 30
+Log: 2023-10-27 22:00:00 [ERROR] Systemd: Failed to start application.service: Unit application.service is masked. Solution: The service has been masked (disabled completely). Unmask it using sudo systemctl unmask application.service before attempting to start it again.
+
+ISSUE 31
+Log: 2023-10-27 22:30:00 [ERROR] TypeScript: TS2307: Cannot find module './App' or its corresponding type declarations. Solution: The import path is incorrect or the file does not exist. Verify the file path case sensitivity (Linux is case-sensitive) and ensure the file extension matches the configuration.
+
+ISSUE 32
+Log: 2023-10-27 23:00:00 [ERROR] Gradle: Could not find method compile() for arguments. Solution: The compile configuration was deprecated and removed in newer Gradle versions. Replace compile with implementation or api in your build.gradle file.
+
+ISSUE 33
+Log: 2023-10-27 23:30:00 [ERROR] Maven: Non-resolvable parent POM. Could not transfer artifact. Solution: Maven cannot download the parent POM from the configured repository. Check your settings.xml for correct proxy/mirror configurations or ensure you are connected to the corporate VPN if using a private Nexus/Artifactory.
+
+ISSUE 34
+Log: 2023-10-28 00:00:00 [ERROR] Socket: Error: read ECONNRESET. Solution: The other side of the TCP conversation abruptly closed its end of the connection. This often happens if the server crashes or if a firewall (like AWS WAF) blocks the request mid-stream.
+
+ISSUE 35
+Log: 2023-10-28 00:30:00 [ERROR] ELB: 503 Service Temporarily Unavailable. Solution: The Load Balancer has no healthy targets to forward the request to. Check the Target Group health checks. Ensure your application endpoint returns a 200 OK code on the health check path (e.g., /health).
+
+ISSUE 36
+Log: 2023-10-28 01:00:00 [ERROR] CloudFormation: ROLLBACK_COMPLETE. The following resource(s) failed to create: [MyEC2Instance]. Solution: Check the "Events" tab in the CloudFormation stack for the specific error. Common causes include insufficient IAM permissions, invalid AMI IDs for the region, or hitting service limits (quotas).
+
+ISSUE 37
+Log: 2023-10-28 01:30:00 [ERROR] Datadog: Error submitting payload: Post "https://app.datadoghq.com/intake/": context deadline exceeded. Solution: The Datadog agent cannot reach the Datadog API. Check outbound network connectivity. If using a proxy, ensure the agent's datadog.yaml is configured with the proxy settings.
+
+ISSUE 38
+Log: 2023-10-28 02:00:00 [ERROR] Ruby: Gem::LoadError: You have already activated rake 13.0.1, but your Gemfile requires rake 12.3.3. Solution: There is a version mismatch between the installed gems and the Bundle. Run bundle exec rake ... to force the command to run in the context of the current project's Gemfile.
+
+ISSUE 39
+Log: 2023-10-28 02:30:00 [ERROR] Swap: swapon: /swapfile: swapon failed: Operation not permitted. Solution: This usually happens inside a Docker container or restricted VPS. Containers generally use the host's swap. If on a VM, ensure you ran the command with sudo.
+
+ISSUE 40
+Log: 2023-10-28 03:00:00 [ERROR] Yum/RPM: rpmdb: Thread/process 12345 failed: Thread died in Berkeley DB library. error: db3 error(-30974) from dbenv->failchk: DB_RUNRECOVERY: Fatal error, run database recovery. Solution: The RPM database is corrupted. Remove the database lock files rm -f /var/lib/rpm/__db* and rebuild the database using rpm --rebuilddb.
+
+ISSUE 41
+Log: 2023-10-28 03:30:00 [ERROR] DNS: nslookup: can't resolve 'internal-service.local': NXDOMAIN. Solution: The DNS server cannot find the domain name. Check /etc/resolv.conf to ensure the correct nameservers are listed. If using Kubernetes, check if CoreDNS pods are running.
+
+ISSUE 42
+Log: 2023-10-28 04:00:00 [ERROR] FileSystem: chmod: changing permissions of 'script.sh': Read-only file system. Solution: The filesystem has been mounted as read-only, often due to a disk error detected by the OS. Remount it as rw (mount -o remount,rw /) or run fsck on the next reboot to repair disk errors.
+
+ISSUE 43
+Log: 2023-10-28 04:30:00 [ERROR] OpenVPN: TLS Error: TLS key negotiation failed to occur within 60 seconds (check your network connectivity). Solution: The UDP packets are being blocked or lost. Check firewalls on both client and server to allow traffic on UDP port 1194. Ensure the client config matches the server's protocol (UDP vs TCP).
+
+ISSUE 44
+Log: 2023-10-28 05:00:00 [ERROR] JWT: JsonWebTokenError: invalid signature. Solution: The token was signed with a different secret key than the one the server is using to verify it. Ensure the JWT_SECRET environment variable matches between the authentication service (issuer) and the verification service.
+
+ISSUE 45
+Log: 2023-10-28 05:30:00 [ERROR] Cron: /bin/sh: 1: /path/to/script.sh: Permission denied. Solution: The script file is not executable. Run chmod +x /path/to/script.sh. Also, verify the user running the cron job has read/execute permissions on the file.
+
+Top 10 Kubernetes (K8S) Troubleshooting Techniques - Middleware.io
+
+This video is relevant because it visually demonstrates troubleshooting several of the Kubernetes-specific errors listed in the dataset, such as CrashLoopBackOff and ImagePullBackOff, providing a practical companion to the text logs.
