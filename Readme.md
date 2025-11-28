@@ -35,6 +35,7 @@ In a full-scale production environment, logs would stream continuously from AWS 
 
 ---
 
+
 ## 📂 Project Structure
 
 ```text
@@ -51,3 +52,7 @@ In a full-scale production environment, logs would stream continuously from AWS 
 │   └── Dockerfile      # Container definition for AWS Lambda
 └── frontend/           # Streamlit UI
     └── app.py          # Chat Interface for testing
+
+
+
+
