@@ -26,7 +26,6 @@ with st.sidebar:
 
 # --- MAIN CHAT INTERFACE ---
 st.title("DevOps Log Analysis Agent")
-st.caption("Powered by Gemini 2.0 Flash, FAISS, and AWS Lambda")
 
 # Initialize Chat History
 if "messages" not in st.session_state:
