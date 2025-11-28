@@ -1,58 +1,122 @@
 # Serverless DevOps Log Analysis Agent 🤖
 
-A serverless RAG (Retrieval-Augmented Generation) application built on AWS that analyzes server logs and provides actionable solutions using Google Gemini AI.
+A fully **serverless RAG (Retrieval-Augmented Generation)** system built
+using **AWS + LangGraph + Google Gemini AI** to analyze server logs and
+provide intelligent, actionable solutions.
 
 ![Architecture Diagram](Architecture-log-rag-agent.png)
 
 ## 📖 Project Overview
 
-This project represents the **"Brain"** of an enterprise-grade log analysis system.
+This project is the **core intelligence (the Brain)** of an
+enterprise-grade log analysis system.
 
-In a full-scale production environment, logs would stream continuously from AWS CloudWatch via Firehose. For this **Proof of Concept (PoC)**, I focused on building the core intelligence logic: a system that ingests a "Knowledge Base" of historical error logs, indexes them into a vector database, and uses a multi-step AI workflow to reason out solutions for new incidents.
+In a real production environment, logs would continuously stream from
+**AWS CloudWatch → Firehose → S3**.\
+For this **Proof of Concept (PoC)**, the focus is on building the **core
+AI logic**:
+
+-   Ingesting historical error logs\
+-   Transforming them into vector embeddings\
+-   Using a self-corrective RAG pipeline to answer log-related questions
+    intelligently
 
 ## 🚀 Key Features
 
-* **Serverless Architecture:** Fully deployed on AWS Lambda, S3, and API Gateway using Terraform. Costs $0.00 when idle.
-* **Dual-Robot System:**
-    * **Ingest Worker:** Automatically processes log files uploaded to S3, converting them into vector embeddings.
-    * **Chat Agent:** A Reasoning Agent that answers user questions via a Streamlit UI.
-* **Intelligent RAG Pipeline:**
-    * Uses **FAISS** for semantic search.
-    * Uses **LangGraph** to create a self-correcting workflow (Retrieve -> Grade -> Generate).
-    * **Self-Grading:** The AI critiques retrieved logs to ensure relevance before answering, preventing hallucinations.
-* **Infrastructure as Code:** Complete AWS environment provisioned via **Terraform**.
+### 🌩 Serverless Architecture
 
----
+Uses AWS Lambda, S3, API Gateway, and ECR.\
+**Costs \$0 when idle.**
+
+### 🤖 Dual-Robot Pipeline
+
+-   **Ingest Worker:** Converts uploaded logs into vector embeddings\
+-   **Chat Agent:** LangGraph reasoning agent served via Streamlit
+
+### 🧠 Intelligent RAG Workflow
+
+-   FAISS for semantic search\
+-   LangGraph for reasoning flows\
+-   Self-grading AI avoids hallucinations and validates retrieved log
+    entries
+
+### ⚙️ Fully Automated Deployment
+
+Infrastructure is provisioned with **Terraform**, including Lambda
+container builds.
 
 ## 🛠️ Tech Stack
 
-* **Cloud:** AWS (Lambda, S3, API Gateway, ECR, IAM)
-* **IaC:** Terraform
-* **AI Model:** Google Gemini 2.0 Flash
-* **Orchestration:** LangChain & LangGraph
-* **Vector DB:** FAISS (CPU)
-* **Frontend:** Streamlit (Python)
-
----
-
+-   **AWS:** Lambda, API Gateway, S3, ECR, IAM\
+-   **IaC:** Terraform\
+-   **AI Model:** Google Gemini 2.0 Flash\
+-   **Workflow Engine:** LangGraph + LangChain\
+-   **Vector DB:** FAISS\
+-   **Frontend:** Streamlit
 
 ## 📂 Project Structure
 
-```text
-.
-├── aws_cloud/          # Terraform Infrastructure code (IaC)
-│   ├── lambda.tf       # Defines Chat & Ingest functions
-│   ├── s3.tf           # S3 Bucket & Event Notifications
-│   ├── api_gateway.tf  # HTTP API trigger for the Chat Agent
-│   └── ...
-├── backend/            # Python Source Code
-│   ├── agent.py        # LangGraph Workflow (The "Brain")
-│   ├── ingest.py       # Vector DB Creation (The "Learner")
-│   ├── lambda_function.py # Handler for Chat API
-│   └── Dockerfile      # Container definition for AWS Lambda
-└── frontend/           # Streamlit UI
-    └── app.py          # Chat Interface for testing
+    .
+    ├── aws_cloud/
+    │   ├── lambda.tf
+    │   ├── s3.tf
+    │   ├── api_gateway.tf
+    │   └── ...
+    ├── backend/
+    │   ├── agent.py
+    │   ├── ingest.py
+    │   ├── lambda_function.py
+    │   └── Dockerfile
+    └── frontend/
+        └── app.py
 
+## ⚡ Deployment Guide
 
+### Prerequisites
 
+-   Docker Desktop\
+-   Terraform\
+-   AWS CLI\
+-   Google Gemini API Key
+
+## Step 1: Clone the Repository
+
+``` bash
+git clone https://github.com/YOUR_USERNAME/serverless-devops-rag-agent.git
+cd serverless-devops-rag-agent
+```
+
+## Step 2: Deploy AWS Infrastructure
+
+``` bash
+cd aws_cloud
+terraform init
+terraform apply -var="google_api_key=YOUR_ACTUAL_GEMINI_KEY"
+```
+
+## Step 3: Save Terraform Outputs
+
+    s3_bucket_name = log-rag-agent-storage-xxxxx
+    deploy_url     = https://xyz.execute-api.us-east-1.amazonaws.com/chat
+
+# 🧠 How to Use the System
+
+## Phase 1: Ingestion
+
+Upload `dataset.txt` to `raw/` folder in S3 bucket.
+
+## Phase 2: Querying
+
+``` bash
+cd frontend
+pip install streamlit requests
+streamlit run app.py
+```
+
+# 🧹 Clean Up
+
+``` bash
+cd aws_cloud
+terraform destroy -var="google_api_key=YOUR_ACTUAL_GEMINI_KEY"
+```
 
